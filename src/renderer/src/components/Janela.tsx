@@ -12,7 +12,7 @@ const Janela = ({ children }: JanelaProps): ReactNode => {
             <SidebarProvider
                 style={
                     {
-                        "--sidebar-width": "20rem",
+                        "--sidebar-width": "18rem",
                         "--sidebar-width-icon": "4rem",
                     } as React.CSSProperties
                 }>

@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar,} from './ui/sidebar'
+import { Sidebar, SidebarContent, SidebarFooter, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarTrigger, useSidebar,} from './ui/sidebar'
 
 import { HomeIcon, SettingsIcon } from 'lucide-react'
 
@@ -7,17 +7,17 @@ const SideBarFull = (): ReactNode => {
     const { open } = useSidebar()
 
     return (
-        <Sidebar side="left" collapsible="icon" className="p-0!">
+        <Sidebar side="left" collapsible="icon" className="overflow-hidden">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem
                         className={
                             open
-                                ? 'ml-auto mr-2 flex flex-row items-center gap-1 scale-120'
+                                ? 'ml-auto mr-2 flex flex-row items-center gap-1 scale-130'
                                 : 'flex flex-col items-center scale-130'
                         }
                     >
-                        <span className={`text-sm ${open ? '' : 'hidden'}`}>
+                        <span className={`text-xs ${open ? '' : 'hidden'}`}>
                             Colapsar
                         </span>
 
@@ -37,21 +37,21 @@ const SideBarFull = (): ReactNode => {
                     }
                 >
                     <SidebarGroupLabel>
-                        <span className="text-lg">Aplicação</span>
+                        <span className="text-base">Aplicação</span>
                     </SidebarGroupLabel>
 
                     <SidebarGroupContent>
-                        <SidebarMenu className="gap-2">
+                        <SidebarMenu className={open ? '' : 'gap-2'}>
                             <SidebarMenuItem
                                 className={
                                     open ? '' : 'flex flex-col items-center justify-center'
                                 }
                             >
                                 <SidebarMenuButton
-                                    className={open ? 'h-11!' : 'scale-130'}
+                                    className={open ? 'py-6' : 'scale-130'}
                                 >
                                     <HomeIcon className={open ? 'size-5.5!' : ''} />
-                                    <span className={open ? 'text-xl' : 'hidden'}>
+                                    <span className={open ? 'text-lg' : ''}>
                                         Home
                                     </span>
                                 </SidebarMenuButton>
@@ -63,10 +63,10 @@ const SideBarFull = (): ReactNode => {
                                 }
                             >
                                 <SidebarMenuButton
-                                    className={open ? 'h-11!' : 'scale-130'}
+                                    className={open ? 'py-6' : 'scale-130'}
                                 >
                                     <SettingsIcon className={open ? 'size-5.5!' : ''} />
-                                    <span className={open ? 'text-xl' : 'hidden'}>
+                                    <span className={open ? 'text-lg' : ''}>
                                         Configurações
                                     </span>
                                 </SidebarMenuButton>
@@ -75,6 +75,25 @@ const SideBarFull = (): ReactNode => {
                     </SidebarGroupContent>
                 </SidebarGroup>
             </SidebarContent>
+
+            <SidebarFooter>
+                <SidebarMenu>
+                    <SidebarMenuItem
+                                className={
+                                    open ? '' : 'flex flex-col items-center justify-center'
+                                }
+                            >
+                                <SidebarMenuButton
+                                    className={open ? 'py-6' : 'scale-130'}
+                                >
+                                    <SettingsIcon className={open ? 'size-5.5!' : ''} />
+                                    <span className={open ? 'text-lg' : ''}>
+                                        Configurações
+                                    </span>
+                                </SidebarMenuButton>
+                            </SidebarMenuItem>
+                </SidebarMenu>
+            </SidebarFooter>
         </Sidebar>
     )
 }
