@@ -7,7 +7,7 @@ const SideBarFull = (): ReactNode => {
     const { open } = useSidebar()
 
     return (
-        <Sidebar side="left" collapsible="icon" className="overflow-hidden">
+        <Sidebar collapsible="icon" className="overflow-hidden">
             <SidebarHeader>
                 <SidebarMenu>
                     <SidebarMenuItem
@@ -28,7 +28,7 @@ const SideBarFull = (): ReactNode => {
 
             <div className="w-auto rounded border" />
 
-            <SidebarContent>
+            <SidebarContent className="overflow-x-hidden">
                 <SidebarGroup
                     className={
                         open

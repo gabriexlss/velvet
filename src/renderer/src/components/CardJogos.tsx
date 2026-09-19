@@ -22,7 +22,7 @@ const CardJogos = ({ nome, tempoJogoSegundos, tags, imagem }: CardJogosProps): R
         <Card className="p-0 gap-0 rounded w-62.5 hover:scale-103 transition-transform cursor-pointer">
             <CardHeader className="p-0 w-62.5 h-62.5">
                 <AspectRatio ratio={1 / 1}>
-                    <img src={imagem} alt="" className="w-full h-full object-cover" />
+                    <img src={imagem} alt="" className="w-full h-full object-cover" draggable={false}/>
                 </AspectRatio>
             </CardHeader>
             <CardContent className="px-2 pt-4 pb">
