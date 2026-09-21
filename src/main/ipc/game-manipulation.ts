@@ -4,7 +4,8 @@ import { ipcMain } from 'electron'
 import { opendir } from 'node:fs/promises'
 
 
-export function genericCore(): void {
+export function gameManipulation(): void {
+    // IPC para detectar o jogo por meio do caminho do executável.
     ipcMain.handle('detectar-engine', async (_event, dados: caminhoArquivo) => {
 
         const arquivo = dados.caminho

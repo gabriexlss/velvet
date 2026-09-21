@@ -2,6 +2,7 @@ import { app } from 'electron'
 import { createWindow } from './mainWindow';
 import { electronApp, optimizer } from '@electron-toolkit/utils'
 import { mainIPC } from './mainIpc';
+import { initializeDatabase } from './db';
 
 // esse metodo só é disparado qnd o processo principal do node é criado, algumas apis só funcionam após isso.
 app.whenReady().then(() => {
@@ -12,6 +13,9 @@ app.whenReady().then(() => {
   }
   // função para iniciar todos os IPCs
   mainIPC()
+  
+  // Função para iniciar o banco de dados.
+  initializeDatabase()
 
   // função que cria a janela principal do programa.
   createWindow()
