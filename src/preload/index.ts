@@ -1,9 +1,11 @@
-import { contextBridge } from 'electron'
+import { contextBridge, ipcRenderer } from 'electron'
 import { electronAPI } from '@electron-toolkit/preload'
+import { caminhoArquivo } from '@shared/types';
 
 // Custom APIs for renderer
 const api = {
-  teste: 'ping'
+  pegarCaminhoArquivo: () => ipcRenderer.invoke('pegar-caminho-arquivo'),
+  detectarEngine: (dados: caminhoArquivo) => ipcRenderer.invoke('detectar-engine', dados)
 }
 
 // Use `contextBridge` APIs to expose Electron APIs to

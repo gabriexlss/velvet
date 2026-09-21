@@ -1,6 +1,6 @@
 {
   "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "TypeScriptTeam.native-preview"
   },
   "[javascript]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"

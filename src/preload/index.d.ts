@@ -1,6 +1,9 @@
 import { ElectronAPI } from '@electron-toolkit/preload'
+import { caminhoArquivo, EngineDetectada, Resposta } from '../shared/types'
+
 interface rotasAPI{
-  teste: void
+  pegarCaminhoArquivo: () => Promise<Resposta<caminhoArquivo>>,
+  detectarEngine: (dados: caminhoArquivo) => Promise<Resposta<EngineDetectada>>
 }
 declare global {
   interface Window {

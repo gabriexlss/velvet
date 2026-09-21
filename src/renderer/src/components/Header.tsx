@@ -2,31 +2,60 @@ import { ReactNode, useState } from 'react'
 import { Button } from './ui/button';
 import { PlusIcon, FilterIcon, SearchIcon } from 'lucide-react'
 import { InputGroup, InputGroupInput, InputGroupAddon } from './ui/input-group'
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader } from './ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader } from './ui/dialog';
 import { Input } from './ui/input';
 import { Field, FieldDescription, FieldGroup, FieldLabel } from './ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { Mensagem } from '@renderer/utils/toast';
+import { ENGINES } from '@shared/vars'
 
-const Engines = [
-  {
-    id: 1,
-    engine: 'Renpy'
-  },
-  {
-    id: 2,
-    engine: 'RPG Maker'
-  },
-  {
-    id: 3,
-    engine: 'Outros/Desconhecido'
-  }
-]
 const Header = (): ReactNode => {
-  const [modalAberto, setModalAberto] = useState<boolean>(false)
-  const [adicionarJogo, setAdicionarJogo] = useState<boolean>(false)
-  const [instalarJogo, setInstalarJogo] = useState<boolean>(false)
+  const [modalAberto, setModalAberto] = useState(false)
+  const [adicionarJogo, setAdicionarJogo] = useState(false)
+  const [instalarJogo, setInstalarJogo] = useState(false)
 
+  const [caminhoJogo, setCaminhoJogo] = useState("")
+  const [engineJogo, setEngineJogo] = useState<number>(0)
+
+  // variavel de controle
+  const [pesquisandoEngine, setPesquisandoEngine] = useState<boolean>(false)
+  const [exploradorAberto, setExploradorAberto] = useState<boolean>(false)
+  const [disabledSelecionarEngine, setDisabledSelecionarEngine] = useState<boolean>(true)
+
+  const handleChangeEngine = (event): void => {
+    setEngineJogo(Number(event))
+  }
+  const selecionarJogo = async (): Promise<void> => {
+    try {
+      setExploradorAberto(true)
+      const resposta = await window.api.pegarCaminhoArquivo()
+      if (!resposta.ok) {
+        Mensagem.aviso({ titulo: 'Aviso', mensagem: resposta.msg })
+        return
+      }
+      setCaminhoJogo(resposta.dados.caminho)
+      detectarEngine(resposta.dados.caminho)
+    } finally {
+      setExploradorAberto(false)
+    }
+  }
+  const detectarEngine = async (caminho: string): Promise<void> => {
+    try {
+      setPesquisandoEngine(true)
+      const resposta = await window.api.detectarEngine({ caminho: caminho })
+
+      if (!resposta.ok) {
+        Mensagem.aviso({ titulo: 'Aviso', mensagem: resposta.msg })
+        return
+      }
+      setEngineJogo(resposta.dados.engine)
+    } finally {
+      setDisabledSelecionarEngine(false)
+      setPesquisandoEngine(false)
+    }
+  }
   return (
+
     <header className='mt-2 h-10 mx-auto w-[95%] flex flex-row items-center gap-2'>
       <InputGroup className='w-100 ml-auto rounded'>
         <InputGroupAddon><SearchIcon /></InputGroupAddon>
@@ -49,7 +78,7 @@ const Header = (): ReactNode => {
           <DialogHeader>
             <span>Escolha como adicionar seu jogo...</span>
           </DialogHeader>
-          <DialogDescription className='flex flex-row gap-4'>
+          <div className='flex flex-row gap-4'>
             <div
               onClick={() => {
                 setModalAberto(false)
@@ -70,7 +99,7 @@ const Header = (): ReactNode => {
               <h1 className='text-lg text-blue-400'>Adicionar Jogo</h1>
               <span className='text-center'>Adicione um jogo já instalado e descompactado no seu computador.</span>
             </div>
-          </DialogDescription>
+          </div>
         </DialogContent>
       </Dialog>
 
@@ -82,7 +111,7 @@ const Header = (): ReactNode => {
           <DialogHeader>
             <span>Adicione seu Jogo</span>
           </DialogHeader>
-          <DialogDescription>
+          <div>
             <FieldGroup>
 
               <Field>
@@ -92,21 +121,30 @@ const Header = (): ReactNode => {
 
               <Field>
                 <FieldLabel><span>Executável</span></FieldLabel>
-                <Input placeholder='Clique e selecione o executável do jogo. (.exe)' />
+                <Input placeholder='Clique e selecione o executável do jogo. (.exe)' onClick={selecionarJogo} readOnly value={caminhoJogo} disabled={exploradorAberto || pesquisandoEngine} />
               </Field>
 
               <Field>
                 <FieldLabel><span>Engine</span></FieldLabel>
-                <Select disabled={true}>
+                <Select
+                  items={Object.values(ENGINES).map((engine) => ({
+                    value: String(engine.id),
+                    label: engine.nome
+                  }))}
+                  value={String(engineJogo)}
+                  onValueChange={handleChangeEngine}
+                  disabled={pesquisandoEngine || disabledSelecionarEngine}
+
+                >
                   <SelectTrigger>
                     <SelectValue placeholder='Escolha sua Engine...' />
                   </SelectTrigger>
                   <SelectContent>
-                    {
-                      Engines.map(e => (
-                        <SelectItem value={e.id} key={e.id}>{e.engine}</SelectItem>
-                      ))
-                    }
+                    {Object.values(ENGINES).map((engine) => (
+                      <SelectItem key={engine.id} value={String(engine.id)}>
+                        {engine.nome}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
                 <FieldDescription>
@@ -128,7 +166,7 @@ const Header = (): ReactNode => {
               </Field>
 
             </FieldGroup>
-          </DialogDescription>
+          </div>
           <DialogFooter>
             <Button variant='destructive' onClick={() => setAdicionarJogo(false)}>
               <span>Cancelar</span>
@@ -148,7 +186,7 @@ const Header = (): ReactNode => {
           <DialogHeader>
             <span>Instale seu Jogo</span>
           </DialogHeader>
-          <DialogDescription className='flex flex-col gap-4 items-center'>
+          <div className='flex flex-col gap-4 items-center'>
             <div className='h-40 w-75 flex flex-col items-center justify-center gap-2 border-dashed border-red-400 border rounded-lg px-4 py-12 hover:border-solid hover:cursor-pointer hover:bg-red-200/10 transition'>
               <h1 className='text-lg text-red-400'>Jogo Compactado</h1>
               <span className='text-center'>Clique ou Arraste um jogo em ZIP ou RAR</span>
@@ -165,7 +203,7 @@ const Header = (): ReactNode => {
                 <span>Instale um jogo por meio de uma URL que você possua, que automaticamente baixaremos e descompactaremos o jogo.</span>
               </FieldDescription>
             </Field>
-          </DialogDescription>
+          </div>
           <DialogFooter>
             <Button variant='destructive' onClick={() => setInstalarJogo(false)}>
               <span>Cancelar</span>
